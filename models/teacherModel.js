@@ -1,6 +1,6 @@
-const mongoose = require("mongoose");
-const jwt = require("jsonwebtoken");
-const bcrypt = require("bcryptjs");
+import mongoose from "mongoose";
+import jwt from "jsonwebtoken"
+import bcrypt from "bcryptjs"
 
 //Defining admin datatypes
 const teacherSchema = new mongoose.Schema({
@@ -60,4 +60,4 @@ teacherSchema.methods.generateAuthToken = async function () {
 
 const Teacher = mongoose.model("Teacher", teacherSchema);
 
-module.exports = Teacher;
+export default Teacher;

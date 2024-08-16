@@ -3,11 +3,16 @@ dotenv.config();
 import express from "express"
 import mongoose from "mongoose"
 
+import teacherRoute from "./routes/techer.js"
+import studentRoute from "./routes/student.js"
+
 
 
 const app = express()
 
 app.use(express.json())
+app.use("/teacher", teacherRoute)
+app.use("/student", studentRoute)
 
 app.post("/", (req,res) => {
     console.log(req);

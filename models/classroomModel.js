@@ -1,11 +1,12 @@
-const mongoose = require("mongoose");
+
+import mongoose from "mongoose";
 
 const classroomSchema = new mongoose.Schema({
-    className: {
+    classroomName: {
         type: String,
         require: true,
     },
-    teacherId: {
+    teacherid: {
         type: String,
         require: true,
     },
@@ -35,6 +36,6 @@ const classroomSchema = new mongoose.Schema({
     ]
 })
 
-const Classroom = mongoose.model("Classroom", classroomSchemaSchema);
+const Classroom = mongoose.model("Classroom", classroomSchema);
 
-module.exports = Classroom;
+export default Classroom;

@@ -94,6 +94,30 @@ router.delete("/classrooms/:classroomId/students", async (req, res) => {
     }
 });
 
+router.post("/classrooms/:classroomId/tasks", async (req, res) => {
+    const {title, description, dueDate} = req.body;
+    const classroomid = req.params.classroomId
+    if(!classroomid || !title || !description || !dueDate){
+        return res.status(422).json({ error: "Please enter full detail!" });
+    }
+    try {
+        const classroom = await Classroom.findById(classroomid);
+        if (!classroom) {
+            return res.status(404).json({ error: "Classroom not found" });
+        }
+        const tasks = await classroom.addTasks(title, description, dueDate);
+
+        const task = tasks[tasks.length-1]
+        console.log(task);
+        
+        res.status(200).json({taskId: task._id, description: task.description, dueDate: task.dueDate})
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ error: "Internal server error" });
+    }
+    return
+})
+
 
 export default router;
  

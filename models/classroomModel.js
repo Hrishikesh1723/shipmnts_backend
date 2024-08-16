@@ -28,8 +28,8 @@ const classroomSchema = new mongoose.Schema({
                 type: String,
                 require: true,
             },
-            duedate: {
-                type: Date,
+            dueDate: {
+                type: String,
                 require: true,
             }
         }
@@ -43,6 +43,20 @@ classroomSchema.methods.addStudent = async function(StudentId){
         })
         await this.save();
         return this.students;
+    } catch (error) {
+        console.log(error);
+    }
+}
+classroomSchema.methods.addTasks = async function
+(title, description, dueDate) {
+    try{
+        this.tasks = this.tasks.concat({
+            title,
+            description,
+            dueDate
+        })
+        await this.save();
+        return this.tasks;
     } catch (error) {
         console.log(error);
     }

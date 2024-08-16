@@ -58,6 +58,19 @@ studentSchema.methods.generateAuthToken = async function () {
   }
 };
 
+studentSchema.methods.addClassroom = async function (classId, classname) {
+    try {
+      this.classrooms = this.classrooms.concat({
+        classId,
+        classname,
+      });
+      await this.save();
+      return this.classrooms;
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
 const Student = mongoose.model("Student", studentSchema);
 
 export default Student;

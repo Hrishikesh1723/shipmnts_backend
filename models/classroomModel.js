@@ -36,6 +36,18 @@ const classroomSchema = new mongoose.Schema({
     ]
 })
 
+classroomSchema.methods.addStudent = async function(StudentId){
+    try{
+        this.students = this.students.concat({
+            StudentId
+        })
+        await this.save();
+        return this.students;
+    } catch (error) {
+        console.log(error);
+    }
+}
+
 const Classroom = mongoose.model("Classroom", classroomSchema);
 
 export default Classroom;

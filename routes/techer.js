@@ -5,6 +5,7 @@ import cookieParser from "cookie-parser";
 import bcrypt from "bcryptjs"
 import Teacher from "../models/teacherModel.js";
 import Classroom from "../models/classroomModel.js";
+import Student from "../models/studentModel.js";
 
 router.post("/addteacher", async (req, res) => {
     const { name, email, password } = req.body;
@@ -25,9 +26,9 @@ router.post("/addteacher", async (req, res) => {
     return
 });
 
-router.post("/:teacherid/classrooms", async (req, res) => {
+router.post("/:teacherId/classrooms", async (req, res) => {
     const {classroomName} = req.body;
-    const teacherid = req.params.teacherid
+    const teacherid = req.params.teacherId
     if(!classroomName){
         return res.status(422).json({ error: "Please enter full detail!" });
     }
@@ -41,6 +42,58 @@ router.post("/:teacherid/classrooms", async (req, res) => {
     }
     return
 })
+router.post("/classrooms/:classroomId/students", async (req, res) => {
+    const { studentId } = req.body;
+    const classroomId = req.params.classroomId;
+    if (!studentId) {
+        return res.status(422).json({ error: "Please enter full detail!" });
+    }
+
+    try {
+        const classroom = await Classroom.findOne({ _id: classroomId });
+        if (!classroom) {
+            return res.status(404).json({ error: "Classroom not found" });
+        }
+        await classroom.addStudent(studentId);
+        const student = await Student.findOne({ _id: studentId });
+        if (!student) {
+            return res.status(404).json({ error: "Student not found" });
+        }
+        await student.addClassroom(classroomId, classroom.classroomName);
+        res.status(200).json({ message: "Student added successfully." });
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ error: "Internal server error" });
+    }
+});
+
+router.delete("/classrooms/:classroomId/students", async (req, res) => {
+    const { studentId } = req.body;
+    const classroomId = req.params.classroomId;
+    try {
+        const classroom = await Classroom.findById(classroomId);
+        if (!classroom) {
+            return res.status(404).json({ error: "Classroom not found" });
+        }
+        classroom.students = classroom.students.filter(
+            (studentObj) => studentObj.StudentId !== studentId
+        );
+        await classroom.save();
+        const student = await Student.findById(studentId);
+        if (!student) {
+            return res.status(404).json({ error: "Student not found" });
+        }
+        student.classrooms = student.classrooms.filter(
+            (classroomObj) => classroomObj.classId !== classroomId
+        );
+        await student.save();
+        res.status(200).json({ message: "Student removed from classroom and classroom removed from student." });
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ error: "Internal server error" });
+    }
+});
+
 
 export default router;
  

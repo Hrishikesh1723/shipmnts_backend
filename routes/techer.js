@@ -118,6 +118,18 @@ router.post("/classrooms/:classroomId/tasks", async (req, res) => {
     return
 })
 
+router.get("/:teacherId/classrooms", async (req, res) => {
+    const teacherid = req.params.teacherId
+    try{
+        const classrooms = await Classroom.findOne({ teacherid})
+        res.status(201).json(classrooms)
+    }
+    catch (err) {
+        console.log(err);
+    }
+    return
+})
+
 
 export default router;
  
